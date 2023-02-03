@@ -50,7 +50,9 @@
         }
         
         function makeRequestWithUserGesture() {
+            console.log("enter makeRequestWithUserGesture");
             if(document.requestStorageAccess) {
+                console.log("execute makeRequestWithUserGesture");
                 const accessPromise = document.requestStorageAccess();
                 accessPromise.then(
                     function () {
