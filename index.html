@@ -35,6 +35,32 @@
         setCookie("userName", "Neeraj Jain Original Domain", 30);
         console.log(getCookie("userName"));
       } else {
+        var promise = document.hasStorageAccess();
+        promise.then(
+        function (hasAccess) {
+            // Boolean hasAccess says whether the document has access or not.
+            console.log("access?", hasAccess);
+            if(!hasAccess) {
+                function makeRequestWithUserGesture() {
+                    const accessPromise = document.requestStorageAccess();
+                    accessPromise.then(
+                        function () {
+                        // Storage access was granted.
+                        console.log("Storage access was granted");
+                        },
+                        function () {
+                        // Storage access was denied.
+                        console.log("Storage access was denied");
+                        }
+                    );
+                }
+            }
+        },
+        function (reason) {
+            // Promise was rejected for some reason.
+            console.log("access rejected - ", reason);
+        }
+        );
         console.log("In an iframe");
         window.addEventListener("message", recieveMessage, false);
         const cookieVal = getCookie("userName");
@@ -46,5 +72,6 @@
   </head>
   <body>
     <h1>Cookie Example</h1>
+    <button onclick="makeRequestWithUserGesture()">Play video</button>
   </body>
 </html>
