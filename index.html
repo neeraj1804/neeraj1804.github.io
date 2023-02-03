@@ -35,32 +35,38 @@
         setCookie("userName", "Neeraj Jain Original Domain", 30);
         console.log(getCookie("userName"));
       } else {
-        var promise = document.hasStorageAccess();
-        promise.then(
-        function (hasAccess) {
-            // Boolean hasAccess says whether the document has access or not.
-            console.log("access?", hasAccess);
-            if(!hasAccess) {
-                function makeRequestWithUserGesture() {
-                    const accessPromise = document.requestStorageAccess();
-                    accessPromise.then(
-                        function () {
-                        // Storage access was granted.
-                        console.log("Storage access was granted");
-                        },
-                        function () {
-                        // Storage access was denied.
-                        console.log("Storage access was denied");
-                        }
-                    );
-                }
+        if(document.hasStorageAccess) {
+            const promise = document.hasStorageAccess();
+            promise.then(
+            function (hasAccess) {
+                // Boolean hasAccess says whether the document has access or not.
+                console.log("access?", hasAccess);
+            },
+            function (reason) {
+                // Promise was rejected for some reason.
+                console.log("access rejected - ", reason);
             }
-        },
-        function (reason) {
-            // Promise was rejected for some reason.
-            console.log("access rejected - ", reason);
+            );
         }
-        );
+        
+        function makeRequestWithUserGesture() {
+            if(document.requestStorageAccess) {
+                const accessPromise = document.requestStorageAccess();
+                accessPromise.then(
+                    function () {
+                    // Storage access was granted.
+                    console.log("Storage access was granted");
+                    const cookieVal = getCookie("userName");
+                    console.log("cookie value", cookieVal);
+                    parent.postMessage(cookieVal, "*");
+                    },
+                    function () {
+                    // Storage access was denied.
+                    console.log("Storage access was denied");
+                    }
+                );
+            }
+        }
         console.log("In an iframe");
         window.addEventListener("message", recieveMessage, false);
         const cookieVal = getCookie("userName");
