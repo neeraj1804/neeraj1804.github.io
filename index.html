@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <title>Original Domain Website</title>
+  <head>
+    <script>
+      function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+          const date = new Date();
+          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+      }
+
+      function getCookie(name) {
+        const nameEQ = name + "=";
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          let cookie = cookies[i];
+          while (cookie.charAt(0) === " ") cookie = cookie.substring(1, cookie.length);
+          if (cookie.indexOf(nameEQ) === 0) return cookie.substring(nameEQ.length, cookie.length);
+        }
+        return null;
+      }
+
+      function eraseCookie(name) {
+        setCookie(name, "", -1);
+      }
+      function recieveMessage(event) {
+        console.log("Received message: ", event.data);
+      }
+      if (window.self === window.top) {
+        console.log("Not in an iframe");
+        setCookie("userName", "Neeraj Jain Original Domain", 30);
+        console.log(getCookie("userName"));
+      } else {
+        console.log("In an iframe");
+        window.addEventListener("message", recieveMessage, false);
+        parent.postMessage("Cookie of original domain", getCookie("userName"));
+      }
+      
+    </script>
+  </head>
+  <body>
+    <h1>Cookie Example</h1>
+  </body>
+</html>
