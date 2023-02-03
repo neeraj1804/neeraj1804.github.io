@@ -37,7 +37,9 @@
       } else {
         console.log("In an iframe");
         window.addEventListener("message", recieveMessage, false);
-        parent.postMessage("Cookie of original domain", getCookie("userName"));
+        const cookieVal = getCookie("userName");
+        console.log("cookie value", cookieVal);
+        parent.postMessage(cookieVal, "*");
       }
       
     </script>
